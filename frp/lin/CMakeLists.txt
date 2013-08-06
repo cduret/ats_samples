@@ -6,7 +6,6 @@ IF (NOT ATS_FOUND)
 	MESSAGE (FATAL_ERROR ”ATS Not Found!”)
 ENDIF ()
 
-set (CMAKE_C_FLAGS "-I. -I/usr/local/include -D_ATS_GCATS")
-ATS_COMPILE (SRC coroutine.dats)
-ADD_EXECUTABLE (coroutine ${SRC})
-
+set (CMAKE_C_FLAGS "-I. -I/usr/local/include")
+ATS_COMPILE (SRC coroutinelin.dats)
+ADD_EXECUTABLE (coroutinelin ${SRC})
