@@ -1,11 +1,15 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+
 PROJECT (CO_FRP C)
 
 FIND_PACKAGE (ATS REQUIRED)
+
 IF (NOT ATS_FOUND)
 	MESSAGE (FATAL_ERROR ”ATS Not Found!”)
 ENDIF ()
 
 set (CMAKE_C_FLAGS "-I. -I/usr/local/include")
+
 ATS_COMPILE (SRC coroutinelin.dats)
+
 ADD_EXECUTABLE (coroutinelin ${SRC})
