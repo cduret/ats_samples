@@ -313,6 +313,14 @@ in print_newline() end
 extern fun ints_evt_from (x: int): coroutine_vt (unit, event_vt int)
 implement ints_evt_from(x) = coroutine_of_linc{unit,event_vt int}(llam _ => (event_vt_tag x, ints_evt_from (x+1)))
 
+symintr >>> *** &&&
+infixl (+) >>>
+infixl (+) ***
+infixl (+) &&&
+overload >>> with co_arr_bind
+overload *** with co_arr_combine
+overload &&& with co_arr_fanout
+
 implement main0(argc, argv) = let
   extern castfn __leak {v:view} (pf: v):<> void
 
@@ -323,18 +331,18 @@ implement main0(argc, argv) = let
   fun event_vt_f2(x: event_vt int):<cloptr1> event_vt float = event_vt_map(x, f2)
 
   #define U unit
+  macdef aif(f) = co_arr<int,float>(,(f))
+  macdef aeif(f) = co_arr<event_vt int,event_vt float>(,(f))
 
   val co = ints_from 2
-  val co1 = co_arr_fanout<int,float,float>(co_arr<int,float>(f1), co_arr<int,float>(f2))
-  val co2 = co_arr_bind<unit, int, (float,float)>(co, co1)
+  val co1 = aif(f1) &&& aif(f2)
+  val co2 = co >>> co1
   val l = co_run_seq( co2, $list_vt{U}(U,U,U,U,U,U,U,U,U,U))
   val () = print_free_list2<float,float>(l)
 
   val co' = ints_evt_from 2
-  val co1' = co_arr_fanout<event_vt int,event_vt float,event_vt float>(
-                      co_arr<event_vt int,event_vt float>(event_vt_f1), 
-                      co_arr<event_vt int,event_vt float>(event_vt_f2))
-  val co2' = co_arr_bind<unit, event_vt int, (event_vt float,event_vt float)>(co', co1')
+  val co1' = aeif(event_vt_f1) &&& aeif(event_vt_f2)
+  val co2' = co' >>> co1'
   val l = co_run_seq(co2', $list_vt{U}(U,U,U,U,U,U,U,U,U,U))
   val () = print_free_list2<event_vt float,event_vt float>(l)
 
